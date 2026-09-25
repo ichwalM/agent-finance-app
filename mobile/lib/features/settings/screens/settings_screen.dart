@@ -457,7 +457,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Column(
               children: [
                 Text(
-                  'FINANCE MOBILE v1.0.0',
+                  'WALLDEV FINANCE v1.0.0',
                   style: AppTypography.sectionEyebrow(context).copyWith(fontSize: 11),
                 ),
                 const SizedBox(height: 2),

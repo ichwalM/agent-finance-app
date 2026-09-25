@@ -63,7 +63,7 @@ class _FinanceAppState extends ConsumerState<FinanceApp> with WidgetsBindingObse
     final isLocked = ref.watch(appLockProvider);
 
     return MaterialApp(
-      title: 'Finance Cockpit',
+      title: 'Walldev Finance',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

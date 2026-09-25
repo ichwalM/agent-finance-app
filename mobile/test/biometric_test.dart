@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:finance_mobile/core/providers/global_providers.dart';
-import 'package:finance_mobile/core/providers/biometric_provider.dart';
 import 'package:finance_mobile/data/services/storage_service.dart';
 import 'package:finance_mobile/features/auth/screens/biometric_lock_screen.dart';
 
