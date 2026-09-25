@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:finance_mobile/core/constants/categories.dart';
 import 'package:finance_mobile/core/utils/currency_formatter.dart';
 import 'package:finance_mobile/core/utils/date_formatter.dart';
 import 'package:finance_mobile/data/models/transaction_model.dart';
+import 'package:finance_mobile/shared_widgets/app_button.dart';
 
 void main() {
   setUpAll(() async {
@@ -91,4 +93,41 @@ void main() {
       expect(outputJson['nominal'], 35000);
     });
   });
+
+  group('AppButton Widget Tests', () {
+    testWidgets('renders all AppButton variants without error', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                AppButton(
+                  label: 'Primary',
+                  variant: AppButtonVariant.primary,
+                  onPressed: () {},
+                ),
+                AppButton(
+                  label: 'Secondary',
+                  variant: AppButtonVariant.secondary,
+                  onPressed: () {},
+                ),
+                AppButton(
+                  label: 'Outline',
+                  variant: AppButtonVariant.outline,
+                  onPressed: () {},
+                ),
+                AppButton(
+                  label: 'Text',
+                  variant: AppButtonVariant.text,
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      expect(find.text('Primary'), findsOneWidget);
+    });
+  });
 }
+
