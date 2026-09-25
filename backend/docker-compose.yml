@@ -41,3 +41,16 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-finance
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      finance-api:
+        condition: service_healthy
+    profiles:
+      - tunnel 
