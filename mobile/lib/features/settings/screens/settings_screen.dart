@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/api_endpoints.dart';
 import '../../../core/providers/global_providers.dart';
+import '../../../core/providers/biometric_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -320,7 +321,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // 2. Appearance Theme Selector
+          // 2. Security & Biometrics
+          Text(
+            'KEAMANAN & AUTENTIKASI',
+            style: AppTypography.sectionEyebrow(context),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          _buildSecurityCard(context, isDark: isDark),
+
+          const SizedBox(height: AppSpacing.lg),
+
+          // 3. Appearance Theme Selector
           Text(
             'TAMPILAN & TEMA',
             style: AppTypography.sectionEyebrow(context),
@@ -421,7 +432,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 _buildInfoTile(
                   context,
                   title: 'AI Vision Engine',
-                  value: 'Gemini 2.5 Flash',
+                  value: '9Router API',
                   subtitle: 'OCR struk dan kategorisasi otomatis',
                   icon: Icons.auto_awesome_outlined,
                   isDark: isDark,
@@ -576,4 +587,132 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
   }
+
+  Widget _buildSecurityCard(BuildContext context, {required bool isDark}) {
+    final isBiometricEnabled = ref.watch(biometricEnabledProvider);
+    final biometricAvailableAsync = ref.watch(biometricAvailableProvider);
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        borderRadius: AppRadius.roundedMd,
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          width: 1.0,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: (isDark ? AppColors.accentDark : AppColors.accentLight)
+                      .withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.fingerprint_rounded,
+                  size: 22,
+                  color: isDark ? AppColors.accentDark : AppColors.accentLight,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Kunci Sidik Jari (Biometrik)',
+                      style: AppTypography.body(context).copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Wajibkan autentikasi saat membuka aplikasi',
+                      style: AppTypography.caption(context),
+                    ),
+                  ],
+                ),
+              ),
+              biometricAvailableAsync.when(
+                data: (isSupported) {
+                  return Switch.adaptive(
+                    value: isBiometricEnabled,
+                    activeTrackColor: isDark ? AppColors.accentDark : AppColors.accentLight,
+                    onChanged: (val) async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      if (!isSupported && val) {
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Sensor sidik jari tidak tersedia atau belum didaftarkan di perangkat.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final success = await ref
+                          .read(biometricEnabledProvider.notifier)
+                          .toggleBiometric(val);
+
+                      if (!success && mounted) {
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text('Autentikasi sidik jari dibatalkan atau tidak cocok.'),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
+                loading: () => const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                error: (_, _) => const SizedBox.shrink(),
+              ),
+            ],
+          ),
+          biometricAvailableAsync.when(
+            data: (isSupported) {
+              if (!isSupported) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.sm),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 14,
+                        color: isDark ? AppColors.warningDark : AppColors.warning,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          'Perangkat belum memiliki data sidik jari atau biometrik terdaftar di sistem HP.',
+                          style: AppTypography.caption(context).copyWith(
+                            color: isDark ? AppColors.warningDark : AppColors.warning,
+                            fontSize: 11.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
 }
+

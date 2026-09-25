@@ -12,6 +12,8 @@
 	<string>Aplikasi memerlukan akses kamera untuk memindai struk belanja fisik Anda.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Aplikasi memerlukan akses galeri foto untuk mengunggah gambar struk belanja.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Aplikasi memerlukan autentikasi biometrik untuk mengamankan data finansial Anda.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

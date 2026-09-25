@@ -41,4 +41,17 @@ class LocalStorageService {
   Future<void> setThemeMode(ThemeMode mode) async {
     await _prefs.setString(_keyThemeMode, mode.name);
   }
+
+  static const String _keyBiometricEnabled = 'pref_biometric_enabled';
+
+  /// Get biometric lock status
+  bool isBiometricEnabled() {
+    return _prefs.getBool(_keyBiometricEnabled) ?? false;
+  }
+
+  /// Enable or disable biometric lock
+  Future<void> setBiometricEnabled(bool enabled) async {
+    await _prefs.setBool(_keyBiometricEnabled, enabled);
+  }
 }
+
