@@ -31,12 +31,20 @@ async function scanReceipt(req, res, next) {
       mimeType: mimetype,
     });
 
+    // Construct public streaming URL through backend gateway (supporting tunnels & reverse proxies)
+    let imageUrl = null;
+    if (storedImage) {
+      const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+      const host = req.get('host');
+      imageUrl = `${protocol}://${host}/api/receipts/${storedImage.objectName}`;
+    }
+
     // NOTE: Does NOT save to Google Sheets! Client reviews/edits then posts to /api/transactions.
     res.status(200).json({
       success: true,
       data: {
         ...parsedData,
-        image_url: storedImage ? storedImage.url : null,
+        image_url: imageUrl,
         image_key: storedImage ? storedImage.objectName : null,
       },
     });
