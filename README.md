@@ -62,6 +62,8 @@ Buka dan sesuaikan nilai di `.env`:
 
 ```env
 NODE_ENV=production
+
+# Server & API Gateway Port
 PORT=3000
 
 # AI Provider: '9router' atau 'gemini'
@@ -78,8 +80,23 @@ GEMINI_API_KEY=AIzaSy...
 GEMINI_MODEL=gemini-1.5-flash
 GEMINI_TIMEOUT_MS=30000
 
+# MinIO Object Storage Configuration & Credentials
+STORAGE_ENABLED=true
+MINIO_ENDPOINT=minio
+MINIO_PORT=9000
+MINIO_CONSOLE_PORT=9001
+MINIO_ROOT_USER=admin
+MINIO_ROOT_PASSWORD=password123
+MINIO_BUCKET=receipts
+MINIO_USE_SSL=false
+MINIO_PUBLIC_URL=http://localhost:9000
+
+# MinIO Host Storage Directories
+MINIO_DATA_DIR=/mnt/HDD/minio/data
+MINIO_CONFIG_DIR=/mnt/HDD/minio/config
+
 # Google Apps Script Web App URL
-GAS_URL=https://script.google.com/macros/s/AKfycbzwfqXJUWiiX9geiQk4yTICcTHbxruPaO-4o5evC2f0LUV__TzZPv1wVaWULYlM50vB/exec
+GAS_URL=https://script.google.com/macros/s/your_deployment_id_here/exec
 GAS_TIMEOUT_MS=10000
 
 # CORS Allowed Origins
