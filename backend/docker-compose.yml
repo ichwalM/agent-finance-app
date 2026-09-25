@@ -20,9 +20,10 @@ services:
       start_period: 10s
 
   minio:
-    image: quay.io/minio/minio:latest
+    image: cgr.dev/chainguard/minio:latest
     container_name: minio
     restart: unless-stopped
+    user: "0:0"
     command: server /data --address ":${MINIO_PORT:-9000}" --console-address ":${MINIO_CONSOLE_PORT:-9001}"
     env_file:
       - .env
@@ -36,7 +37,7 @@ services:
       - "${MINIO_PORT:-9000}:${MINIO_PORT:-9000}"
       - "${MINIO_CONSOLE_PORT:-9001}:${MINIO_CONSOLE_PORT:-9001}"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://127.0.0.1:${MINIO_PORT:-9000}/minio/health/live || exit 1"]
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/${MINIO_PORT:-9000}' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
